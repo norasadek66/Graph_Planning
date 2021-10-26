@@ -34,12 +34,19 @@ class ActionLayer(BaseActionLayer):
         layers.ActionNode
         """
         # TODO: implement this function
-        effectOfActionA = self.children(actionA)
-        effectOfActionB = self.children(actionB)
-        precondOfActionA = self.parents(actionA)
-        #precondOfActionB = self.children
+        effectOfActionA = self.children[actionA]
+        effectOfActionB = self.children[actionB]
+        precondOfActionA = self.parents[actionA]
+        precondOfActionB = self.parents[actionB]
+        for effect in effectOfActionA:
+            if ~effect in precondOfActionB:
+                return True
 
-        return True
+        for effect in effectOfActionB:
+            if ~effect in precondOfActionA:
+                return True
+
+        return False
         raise NotImplementedError
 
     def _competing_needs(self, actionA, actionB):
@@ -53,8 +60,10 @@ class ActionLayer(BaseActionLayer):
         --------
         layers.ActionNode
         layers.BaseLayer.parent_layer
+
         """
         # TODO: implement this function
+
         return False
         raise NotImplementedError
 
