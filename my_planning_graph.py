@@ -96,25 +96,22 @@ class LiteralLayer(BaseLiteralLayer):
         """
         # TODO: implement this function
         preceedingActionLayer = self.parent_layer
-        actionsGeneratedLiteralA = []
-        actionsGeneratedLiteralB = []
-        #notMutex = True
-        for k,v in preceedingActionLayer.children.items():
-            if literalA in v:
-                actionsGeneratedLiteralA.append(k)
-            if literalB in v :
-                actionsGeneratedLiteralB.append(k)
-        if len(actionsGeneratedLiteralB) == 1 and len(actionsGeneratedLiteralA) == 1 :
-            if self.is_mutex(actionsGeneratedLiteralA[0],actionsGeneratedLiteralB[0]):
+        actionsGeneratedLiteralA = self.parents[literalA]
+        actionsGeneratedLiteralB = self.parents[literalB]
+        if len(actionsGeneratedLiteralA) == 1 and len(actionsGeneratedLiteralB) == 1:
+            if preceedingActionLayer.is_mutex(next(iter(actionsGeneratedLiteralA)),next(iter(actionsGeneratedLiteralB))):
                 return True
-            else: return False
+            else:
+                return False
         else:
-            for action in actionsGeneratedLiteralA:
-                for action2 in actionsGeneratedLiteralB:
-                    if self.is_mutex(action,action2) ==  False:
-                        #print(action)
+            for actionA in actionsGeneratedLiteralA:
+                for actionB in actionsGeneratedLiteralB:
+                    if preceedingActionLayer.is_mutex(actionA,actionB) == False:
                         return False
             return True
+
+
+
 
 
 
