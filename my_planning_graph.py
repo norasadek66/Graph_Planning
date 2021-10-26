@@ -68,14 +68,11 @@ class ActionLayer(BaseActionLayer):
         preceedingLayer = self.parent_layer
         precondOfActionA = self.parents[actionA]
         precondOfActionB = self.parents[actionB]
-        for precond in precondOfActionA:
-            if ~precond in precondOfActionB:
-                if preceedingLayer.__contains__(precond) and preceedingLayer.__contains__(~precond):
+        for precondA in precondOfActionA:
+            for precondB in precondOfActionB:
+                if preceedingLayer.is_mutex(precondA,precondB):
                     return True
-        for precond in precondOfActionB:
-            if ~precond in precondOfActionA:
-                if preceedingLayer.__contains__(precond) and preceedingLayer.__contains__(~precond):
-                    return True
+
         return False
         # TODO: implement this function
 
@@ -98,7 +95,32 @@ class LiteralLayer(BaseLiteralLayer):
         layers.BaseLayer.parent_layer
         """
         # TODO: implement this function
-        return True
+        preceedingActionLayer = self.parent_layer
+        actionsGeneratedLiteralA = []
+        actionsGeneratedLiteralB = []
+        #notMutex = True
+        for k,v in preceedingActionLayer.children.items():
+            if literalA in v:
+                actionsGeneratedLiteralA.append(k)
+            if literalB in v :
+                actionsGeneratedLiteralB.append(k)
+        if len(actionsGeneratedLiteralB) == 1 and len(actionsGeneratedLiteralA) == 1 :
+            if self.is_mutex(actionsGeneratedLiteralA[0],actionsGeneratedLiteralB[0]):
+                return True
+            else: return False
+        else:
+            for action in actionsGeneratedLiteralA:
+                for action2 in actionsGeneratedLiteralB:
+                    if self.is_mutex(action,action2) ==  False:
+                        #print(action)
+                        return False
+            return True
+
+
+
+
+
+        return False
         raise NotImplementedError
 
     def _negation(self, literalA, literalB):
