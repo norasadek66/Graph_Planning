@@ -55,6 +55,9 @@ class ActionLayer(BaseActionLayer):
         Hints:
             (1) `self.parent_layer` contains a reference to the previous literal layer
             (2) `self.parents` contains a map from actions to preconditions
+            base layer : returns an object of type layer
+            self.parents -> dictionary
+
         
         See Also
         --------
@@ -62,7 +65,20 @@ class ActionLayer(BaseActionLayer):
         layers.BaseLayer.parent_layer
 
         """
+        preceedingLayer = self.parent_layer
+        precondOfActionA = self.parents[actionA]
+        precondOfActionB = self.parents[actionB]
+        for precond in precondOfActionA:
+            if ~precond in precondOfActionB:
+                if preceedingLayer.__contains__(precond) and preceedingLayer.__contains__(~precond):
+                    return True
+        for precond in precondOfActionB:
+            if ~precond in precondOfActionA:
+                if preceedingLayer.__contains__(precond) and preceedingLayer.__contains__(~precond):
+                    return True
+        return False
         # TODO: implement this function
+
 
         return False
         raise NotImplementedError
@@ -88,7 +104,7 @@ class LiteralLayer(BaseLiteralLayer):
     def _negation(self, literalA, literalB):
         """ Return True if two literals are negations of each other """
         # TODO: implement this function
-        return  True
+        return ~literalA == literalB
         raise NotImplementedError
 
 
