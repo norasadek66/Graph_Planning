@@ -189,6 +189,21 @@ class PlanningGraph:
         Russell-Norvig 10.3.1 (3rd Edition)
         """
         # TODO: implement this function
+        sum = 0
+        i = 0
+        copiedGoal = list(self.goal)
+
+        while len(copiedGoal) != 0:
+            lastAddedLayer = self.literal_layers[-1]
+            for goal in self.goal:
+                if goal in copiedGoal:
+                    #print("goal still here", i)
+                    if lastAddedLayer.__contains__(goal):
+                        sum += i
+                        copiedGoal.remove(goal)
+            i += 1
+            self.fill(1)
+        return sum
         raise NotImplementedError
 
     def h_maxlevel(self):
