@@ -197,7 +197,6 @@ class PlanningGraph:
             lastAddedLayer = self.literal_layers[-1]
             for goal in self.goal:
                 if goal in copiedGoal:
-                    #print("goal still here", i)
                     if lastAddedLayer.__contains__(goal):
                         sum += i
                         copiedGoal.remove(goal)
@@ -234,6 +233,20 @@ class PlanningGraph:
         WARNING: you should expect long runtimes using this heuristic with A*
         """
         # TODO: implement maxlevel heuristic
+        listOfValues = []
+        i = 0
+        copiedGoal = list(self.goal)
+
+        while len(copiedGoal) != 0:
+            lastAddedLayer = self.literal_layers[-1]
+            for goal in self.goal:
+                if goal in copiedGoal:
+                    if lastAddedLayer.__contains__(goal):
+                        listOfValues.append(i)
+                        copiedGoal.remove(goal)
+            i += 1
+            self.fill(1)
+        return max(listOfValues)
         raise NotImplementedError
 
     def h_setlevel(self):
@@ -259,6 +272,29 @@ class PlanningGraph:
         WARNING: you should expect long runtimes using this heuristic on complex problems
         """
         # TODO: implement setlevel heuristic
+        i = 0
+        allGoalsAreMet = True
+        while True:
+            allGoalsAreMet = True
+            lastAddedLayer = self.literal_layers[-1]
+            for goal in self.goal:
+                if lastAddedLayer.__contains__(goal):
+                    continue
+                else:
+                    allGoalsAreMet = False
+
+            if allGoalsAreMet:
+                targetLayer = lastAddedLayer
+                mutexGoals = True
+                for goalA in self.goal:
+                    for goalB in self.goal:
+                        if goalA != goalB:
+                            if targetLayer.is_mutex(goalA, goalB):
+                                mutexGoals = False
+                if mutexGoals:
+                    return i
+            i += 1
+            self.fill(1)
         raise NotImplementedError
 
     ##############################################################################
